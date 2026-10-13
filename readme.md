@@ -194,7 +194,58 @@ from → to → amount validity → balance → daily limit
 
 ### B1. Browser model
 
+`browser.model`:
 
+```text
+Content:   Allow, Restrict, Block
+Cookies:   Allow, Restrict, Block
+Popups:    Yes, No
+Addons:    Yes, No
+Attacks:   Yes, No
+Forgeries: Yes, No
+```
+
+PICT 2-way ажиллуулалт:
+
+```bash
+pict browser.model | tee results/browser-2way.txt
+```
+
+PICT 3-way ажиллуулалт:
+
+```bash
+pict browser.model /o:3 > results/browser-3way.txt
+```
+
+Мөрийн тоо:
+
+```text
+2-way = 10
+3-way = 20
+```
+
+Browser model-ийн бүрэн олонлог:
+
+```text
+3 × 3 × 2 × 2 × 2 × 2 = 144
+```
+
+| Хувилбар | Мөрийн тоо | Бүрэн олонлогтой харьцуулалт |
+|---|---:|---:|
+| 2-way | 10 | 10 / 144 |
+| 3-way | 20 | 20 / 144 |
+| Бүрэн олонлог | 144 | 144 / 144 |
+
+Лекц дээр 2-way хамралтыг гараар 9 мөрөнд багтаасан жишээтэй харьцуулахад PICT 10 мөр гаргасан. Энэ нь PICT greedy алгоритм ашигладаг бөгөөд хамгийн бага боломжит мөрийн тоог заавал олно гэсэн баталгаа байхгүйтэй холбоотой. Харин PICT нь pairwise хамралтыг автоматаар бүрдүүлж, гараар хийх үед алдах боломжтой хослолуудыг системтэйгээр хамруулдаг.
+
+3-way үед 20 мөр гарсан бөгөөд энэ нь 2-way-ийн 10 мөрөөс их боловч бүрэн 144 хослолоос хавьгүй бага байна. Interaction strength өсөх тусам илүү олон параметрийн хослолыг нэгэн зэрэг хамруулах шаардлагатай тул тестийн мөрийн тоо өссөн.
+
+Гаралтууд:
+
+```text
+results/browser-2way.txt
+results/browser-3way.txt
+```
 
 ### B2. Transfer model
 
