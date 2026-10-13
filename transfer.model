@@ -1,0 +1,35 @@
+From: Valid, Frozen, Missing
+To: Valid, Missing, SameAsFrom
+Amount: NonPositive, Normal, OverBalance, OverLimit
+Currency: Same, Different
+
+# From error choices are treated as SINGLE
+IF [From] = "Frozen" THEN [To] = "Valid";
+IF [From] = "Frozen" THEN [Amount] = "Normal";
+IF [From] = "Frozen" THEN [Currency] = "Same";
+
+IF [From] = "Missing" THEN [To] = "Valid";
+IF [From] = "Missing" THEN [Amount] = "Normal";
+IF [From] = "Missing" THEN [Currency] = "Same";
+
+# To error choices are tested only with a valid From and normal Amount
+IF [To] = "Missing" THEN [From] = "Valid";
+IF [To] = "Missing" THEN [Amount] = "Normal";
+IF [To] = "Missing" THEN [Currency] = "Same";
+
+IF [To] = "SameAsFrom" THEN [From] = "Valid";
+IF [To] = "SameAsFrom" THEN [Amount] = "Normal";
+IF [To] = "SameAsFrom" THEN [Currency] = "Same";
+
+# Amount error choices are tested only with valid accounts
+IF [Amount] = "NonPositive" THEN [From] = "Valid";
+IF [Amount] = "NonPositive" THEN [To] = "Valid";
+IF [Amount] = "NonPositive" THEN [Currency] = "Same";
+
+IF [Amount] = "OverBalance" THEN [From] = "Valid";
+IF [Amount] = "OverBalance" THEN [To] = "Valid";
+IF [Amount] = "OverBalance" THEN [Currency] = "Same";
+
+IF [Amount] = "OverLimit" THEN [From] = "Valid";
+IF [Amount] = "OverLimit" THEN [To] = "Valid";
+IF [Amount] = "OverLimit" THEN [Currency] = "Same";
