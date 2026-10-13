@@ -249,7 +249,245 @@ results/browser-3way.txt
 
 ### B2. Transfer model
 
+Хэсэг A-д тодорхойлсон сонголтуудыг PICT model хэл рүү буулгаж, гурван хувилбарыг ажиллуулав.
 
+#### 1. Хязгаарлалтгүй model — `transfer-nc.model`
+
+```text
+From: Valid, Frozen, Missing
+To: Valid, Missing, SameAsFrom
+Amount: NonPositive, Normal, OverBalance, OverLimit
+Currency: Same, Different
+```
+
+Ажиллуулсан команд:
+
+```bash
+pict transfer-nc.model > results/transfer-nc.txt
+```
+
+Гарсан мөрийн тоо:
+
+```text
+13
+```
+
+Энэ model-д алдаатай утгуудыг энгийн утгатай адил авч үзсэн тул нэг мөрөнд хэд хэдэн алдаа зэрэг орсон. Жишээлбэл:
+
+```text
+Missing  SameAsFrom  NonPositive  Same
+```
+
+гэсэн мөрөнд `From=Missing`, `To=SameAsFrom`, `Amount=NonPositive` гэсэн **3 алдаа** зэрэг орсон. Ийм олон алдаатай мөр нь error masking үүсгэж, яг аль алдааг шалгаж байгааг тодорхой бус болгоно.
+
+`transfer-nc` гаралтад happy path мөр байна:
+
+```text
+Valid  Valid  Normal  Different
+```
+
+#### 2. Хязгаарлалттай model — `transfer.model`
+
+A2 хэсэгт тогтоосон `[SINGLE]` санааг PICT-ийн `IF` constraint-уудаар буулгав. Алдаатай choice сонгогдсон үед бусад параметрүүдийг хэвийн утгад тогтоосон.
+
+Ажиллуулсан команд:
+
+```bash
+pict transfer.model > results/transfer.txt
+```
+
+Гарсан мөрийн тоо:
+
+```text
+8
+```
+
+Гаралт:
+
+```text
+Missing Valid Normal Same
+Frozen Valid Normal Same
+Valid Valid NonPositive Same
+Valid SameAsFrom Normal Same
+Valid Valid OverLimit Same
+Valid Missing Normal Same
+Valid Valid OverBalance Same
+Valid Valid Normal Different
+```
+
+Энд нэг мөрөнд хамгийн ихдээ **1 алдаатай choice** байна. Ингэснээр `ERROR_NO_FROM`, `ERROR_FROZEN`, `ERROR_NO_TO`, `ERROR_SAME_ACCOUNT`, `ERROR_BAD_AMOUNT`, `ERROR_INSUFFICIENT`, `ERROR_LIMIT` гэсэн алдааны ангиудыг тус тусад нь тайлбарлах боломжтой болсон.
+
+Happy path:
+
+```text
+Valid  Valid  Normal  Different
+```
+
+> A2 дахь `72 → 9` нь Category-Partition аргаар гаргасан төлөөлөх спецификацийн тооцоо. Харин PICT нь pairwise coverage-ийг greedy алгоритмаар бүрдүүлдэг тул яг 9 мөр заавал үүсгэхгүй; энэ constrained model дээр 8 мөр үүссэн.
+
+#### 3. Negative values model — `transfer-neg.model`
+
+Category-Partition-ийн `[ERROR]` утгуудыг PICT-д `~` negative value хэлбэрээр тэмдэглэв.
+
+```text
+From: Valid, ~Frozen, ~Missing
+To: Valid, ~Missing, ~SameAsFrom
+Amount: Normal, ~NonPositive, ~OverBalance, ~OverLimit
+Currency: Same, Different
+```
+
+Ажиллуулсан команд:
+
+```bash
+pict transfer-neg.model > results/transfer-neg.txt
+```
+
+Гарсан мөрийн тоо:
+Хэсэг A-д тодорхойлсон сонголтуудыг PICT model хэл рүү буулгаж, гурван хувилбарыг ажиллуулав.
+
+#### 1. Хязгаарлалтгүй model — `transfer-nc.model`
+
+```text
+From: Valid, Frozen, Missing
+To: Valid, Missing, SameAsFrom
+Amount: NonPositive, Normal, OverBalance, OverLimit
+Currency: Same, Different
+```
+
+Ажиллуулсан команд:
+
+```bash
+pict transfer-nc.model > results/transfer-nc.txt
+```
+
+Гарсан мөрийн тоо:
+
+```text
+13
+```
+
+Энэ model-д алдаатай утгуудыг энгийн утгатай адил авч үзсэн тул нэг мөрөнд хэд хэдэн алдаа зэрэг орсон. Жишээлбэл:
+
+```text
+Missing  SameAsFrom  NonPositive  Same
+```
+
+гэсэн мөрөнд `From=Missing`, `To=SameAsFrom`, `Amount=NonPositive` гэсэн **3 алдаа** зэрэг орсон. Ийм олон алдаатай мөр нь error masking үүсгэж, яг аль алдааг шалгаж байгааг тодорхой бус болгоно.
+
+`transfer-nc` гаралтад happy path мөр байна:
+
+```text
+Valid  Valid  Normal  Different
+```
+
+#### 2. Хязгаарлалттай model — `transfer.model`
+
+A2 хэсэгт тогтоосон `[SINGLE]` санааг PICT-ийн `IF` constraint-уудаар буулгав. Алдаатай choice сонгогдсон үед бусад параметрүүдийг хэвийн утгад тогтоосон.
+
+Ажиллуулсан команд:
+
+```bash
+pict transfer.model > results/transfer.txt
+```
+
+Гарсан мөрийн тоо:
+
+```text
+8
+```
+
+Гаралт:
+
+```text
+Missing Valid Normal Same
+Frozen Valid Normal Same
+Valid Valid NonPositive Same
+Valid SameAsFrom Normal Same
+Valid Valid OverLimit Same
+Valid Missing Normal Same
+Valid Valid OverBalance Same
+Valid Valid Normal Different
+```
+
+Энд нэг мөрөнд хамгийн ихдээ **1 алдаатай choice** байна. Ингэснээр `ERROR_NO_FROM`, `ERROR_FROZEN`, `ERROR_NO_TO`, `ERROR_SAME_ACCOUNT`, `ERROR_BAD_AMOUNT`, `ERROR_INSUFFICIENT`, `ERROR_LIMIT` гэсэн алдааны ангиудыг тус тусад нь тайлбарлах боломжтой болсон.
+
+Happy path:
+
+```text
+Valid  Valid  Normal  Different
+```
+
+> A2 дахь `72 → 9` нь Category-Partition аргаар гаргасан төлөөлөх спецификацийн тооцоо. Харин PICT нь pairwise coverage-ийг greedy алгоритмаар бүрдүүлдэг тул яг 9 мөр заавал үүсгэхгүй; энэ constrained model дээр 8 мөр үүссэн.
+
+#### 3. Negative values model — `transfer-neg.model`
+
+Category-Partition-ийн `[ERROR]` утгуудыг PICT-д `~` negative value хэлбэрээр тэмдэглэв.
+
+```text
+From: Valid, ~Frozen, ~Missing
+To: Valid, ~Missing, ~SameAsFrom
+Amount: Normal, ~NonPositive, ~OverBalance, ~OverLimit
+Currency: Same, Different
+```
+
+Ажиллуулсан команд:
+
+```bash
+pict transfer-neg.model > results/transfer-neg.txt
+```
+
+Гарсан мөрийн тоо:
+
+```text
+16
+```
+
+PICT нь negative value ашиглахад нэг мөрөнд хамгийн ихдээ **нэг negative утга** оруулсан. Иймээс хязгаарлалтгүй model дээр гарсан 2–3 алдаа зэрэг давхцах асуудал арилсан.
+
+Happy path хоёр мөр гарсан:
+
+```text
+Valid  Valid  Normal  Same
+Valid  Valid  Normal  Different
+```
+
+Мөн negative мөрийн жишээ:
+
+```text
+Valid  Valid  ~OverBalance  Different
+Valid  ~Missing  Normal  Different
+~Frozen  Valid  Normal  Same
+```
+
+Эдгээр мөр бүрт зөвхөн нэг сөрөг утга байгаа тул oracle тодорхой байна.
+
+### Гурван model-ийн харьцуулалт
+
+| Model | Мөрийн тоо | Happy path мөр | Нэг мөр дэх хамгийн их алдаа | Тайлбар |
+|---|---:|---:|---:|---|
+| `transfer-nc.model` | 13 | 1 | 3 | Constraint байхгүй тул олон алдаа нэг мөрөнд давхцсан |
+| `transfer.model` | 8 | 1 | 1 | A2-ын SINGLE санааг IF constraint-аар тусгаарласан |
+| `transfer-neg.model` | 16 | 2 | 1 negative | `~` нь нэг мөрөнд нэг negative утгыг зөвшөөрсөн |
+
+`transfer-neg.model` дээр `~` ашигласнаар алдаатай утгууд хоорондоо нэг мөрөнд давхцахгүй болсон. Иймээс A2-ын алдааг тусгаарлах олон `IF` constraint шаардлагагүй болж байгаа боловч бизнесийн логикийн хувьд боломжгүй эсвэл утгагүй хослолыг хасах шаардлага гарвал constraint ашиглах хэрэгцээ хэвээр үлдэнэ.
+
+### PICT гаралтаас бодит тест кейс болгон хөрвүүлсэн 3 мөр
+
+| Test | Setup | Оролт | Oracle |
+|---|---|---|---|
+| PICT-TC01 Happy path | `ACC100` valid, frozen биш, balance=1000, remaining daily limit=500; `ACC300` valid | `{"from":"ACC100","to":"ACC300","amount":100,"currency":"EUR"}` | HTTP `201`, `result="OK"` |
+| PICT-TC02 Frozen account | `ACC200` frozen; `ACC300` valid | `{"from":"ACC200","to":"ACC300","amount":100,"currency":"USD"}` | HTTP `200`, `result="ERROR_FROZEN"` |
+| PICT-TC03 Over balance | `ACC100` valid, balance=1000, limit хангалттай; `ACC300` valid | `{"from":"ACC100","to":"ACC300","amount":1100,"currency":"EUR"}` | HTTP `200`, `result="ERROR_INSUFFICIENT"` |
+
+PICT-TC01 нь бүх сонголт хүчинтэй happy path. PICT-TC02 нь `transfer-neg.model`-ийн `~Frozen` нэг алдаатай мөрийг бодит тест болгон хөрвүүлсэн. PICT-TC03 нь `~OverBalance` мөрийг бодит amount утгаар илэрхийлж, үлдэгдэл хүрэлцэхгүй нөхцөлийн oracle-ийг тодорхойлсон.
+
+Гаралтын файлууд:
+
+```text
+results/transfer-nc.txt
+results/transfer.txt
+results/transfer-neg.txt
+```
 
 ### B3. Category-Partition ба PICT харьцуулалт
 
