@@ -157,6 +157,35 @@ from → to → amount validity → balance → daily limit
 
 ## A3. Спецификацийн хүснэгт
 
+Доорх спецификациуд нь Category-Partition аргаар сонгосон төлөөлөх утгууд болон A2 хэсэгт тогтоосон хязгаарлалтыг ашиглана. Хүлээгдэх үр дүнг дараах давуу эрэмбээр тодорхойлов:
+
+```text
+from → to → amount validity → balance → daily limit
+```
+
+| ID | From | To | Amount | Currency | Төрөл | Хүлээгдэх статус | Хүлээгдэх result |
+|---|---|---|---|---|---|---:|---|
+| TC01 | Valid | Valid | Normal | Same | Happy path | 201 | `OK` |
+| TC02 | Valid | Valid | Normal | Different | Happy path / currency conversion | 201 | `OK` |
+| TC03 | Missing | Valid | Normal | Same | `[ERROR][SINGLE]` | 200 | `ERROR_NO_FROM` |
+| TC04 | Frozen | Valid | Normal | Same | `[ERROR][SINGLE]` | 200 | `ERROR_FROZEN` |
+| TC05 | Valid | Missing | Normal | Same | `[ERROR][SINGLE]` | 200 | `ERROR_NO_TO` |
+| TC06 | Valid | SameAsFrom | Normal | Same | `[ERROR][SINGLE]` | 200 | `ERROR_SAME_ACCOUNT` |
+| TC07 | Valid | Valid | NonPositive | Same | `[ERROR][SINGLE]` | 200 | `ERROR_BAD_AMOUNT` |
+| TC08 | Valid | Valid | OverBalance | Same | `[ERROR][SINGLE]` | 200 | `ERROR_INSUFFICIENT` |
+| TC09 | Valid | Valid | OverLimit | Same | `[ERROR][SINGLE]` | 200 | `ERROR_LIMIT` |
+| TC10 | Missing | Missing | Normal | Same | Давхар алдаа | 200 | `ERROR_NO_FROM` |
+| TC11 | Frozen | Missing | Normal | Same | Давхар алдаа | 200 | `ERROR_FROZEN` |
+| TC12 | Valid | Valid | OverLimit | Different | Currency conversion + limit | 200 | `ERROR_LIMIT` |
+
+### Спецификацийн тайлбар
+
+- **TC01** нь бүх үндсэн нөхцөл хүчинтэй happy path бөгөөд шилжүүлэг амжилттай хийгдэх ёстой.
+- **TC02** нь currency өөр үед ханшийн хөрвүүлэлт хийгдсэн ч бусад нөхцөл хангагдсан бол шилжүүлэг амжилттай болохыг шалгана.
+- **TC03–TC09** нь тодорхойлолтод өгөгдсөн алдааны анги бүрийг тус бүр нэг төлөөлөх тестээр шалгана.
+- **TC10** дээр `from` болон `to` хоёулаа байхгүй боловч бидний тогтоосон давуу эрэмбээр `from` эхэлж шалгагдах тул `ERROR_NO_FROM` хүлээнэ.
+- **TC11** дээр эх данс frozen бөгөөд `to` байхгүй үед мөн `from` талын алдаа түрүүлж, `ERROR_FROZEN` хүлээнэ.
+- **TC12** нь өөр currency-тэй үед хөрвүүлсний дараах дүн өдрийн лимитээс хэтэрвэл `ERROR_LIMIT` гарах ёстойг шалгана.
 
 
 ---
